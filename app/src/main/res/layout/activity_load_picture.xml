@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.bruno.publicador.LoadPictureActivity">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fotoActionButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginRight="42dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/holo_red_dark"
+        app:elevation="10dp"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/imageToUp"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:contentDescription="fotoProducto"
+            android:scaleType="fitCenter" />
+
+        <Button
+            android:id="@+id/chargeGalleryButton"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_weight="0.04"
+            android:text="Cargar de la galeria" />
+
+        <Button
+            android:id="@+id/uploadFirebaseButton"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_weight="0.07"
+            android:text="Subir " />
+
+        <Button
+            android:id="@+id/buttonSelectionMultiple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subir Varias Desde La Galeria" />
+
+    </LinearLayout>
+
+</RelativeLayout>

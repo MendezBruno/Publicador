@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Publicador</string>
+    <string name="action_settings">Settings</string>
+    <string name="password" />
+    <string name="username" />
+    <string name="signin"> signin</string>
+    <string name="cancel"> cancel</string>
+    <string name="ok" />
+</resources>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1011498024113",
+    "firebase_url": "https://carniceria-app.firebaseio.com",
+    "project_id": "carniceria-app",
+    "storage_bucket": "carniceria-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011498024113:android:cdd15b2fa9ce0e06",
+        "android_client_info": {
+          "package_name": "com.example.bruno.publicador"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011498024113-ml7fqbbk6n3bdfe3eqn00960jm8ohsl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bruno.publicador",
+            "certificate_hash": "6311ad04f82729f13ec8ed470885adfab3e75506"
+          }
+        },
+        {
+          "client_id": "1011498024113-kpuj3uq1vj3a3trkbeccb505g2vjb7e3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxOjK966gEO8hfwpPm7VSowVHi7vPawwk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011498024113-kpuj3uq1vj3a3trkbeccb505g2vjb7e3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
