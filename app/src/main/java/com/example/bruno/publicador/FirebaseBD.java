@@ -1,14 +1,18 @@
 package com.example.bruno.publicador;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
@@ -28,12 +32,17 @@ import java.io.InputStream;
  */
 public class FirebaseBD {
     private StorageReference mStorageRef;
+    private FirebaseDatabase database;
     private static String FIREBASE_DIRECTORY_REFERENCE = "imagenes";
     private static String SEPARADOR = "/";
 
     FirebaseBD (){
        setmStorageRef(FirebaseStorage.getInstance().getReference());
+        setmDatabaseInstance( FirebaseDatabase.getInstance());
     }
+
+    private void setmDatabaseInstance(FirebaseDatabase instance) { this.database = instance; };
+    public FirebaseDatabase getmDatabaseInstance () { return database; }
 
 
     public StorageReference getmStorageRef() {
@@ -49,7 +58,7 @@ public class FirebaseBD {
     }
 
     void uploadPictureToFirebaseByBitmap(ImageView foto) {
-        StorageReference uploadReference = getUploadReference();
+        final StorageReference uploadReference = getUploadReference();
         foto.setDrawingCacheEnabled(true);
         foto.buildDrawingCache();
         Bitmap bitmap = foto.getDrawingCache();
@@ -67,6 +76,7 @@ public class FirebaseBD {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                saveUriAndName(downloadUrl, uploadReference.getPath());
             }
         });
     }
@@ -88,6 +98,7 @@ public class FirebaseBD {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
             }
         });
     }
@@ -100,8 +111,8 @@ public class FirebaseBD {
         StorageMetadata metadata = new StorageMetadata.Builder()
                 .setContentType("image/jpeg")
                 .build();
-
-        StorageReference storageRef = getmStorageRef().child("imagenes/"+file.getLastPathSegment());
+        final String childName = "imagenes/" + file.getLastPathSegment();
+        StorageReference storageRef = getmStorageRef().child(childName);
         // Upload file and metadata to the path 'images/mountains.jpg'
         UploadTask uploadTask = storageRef.putFile(file, metadata);
 
@@ -126,9 +137,19 @@ public class FirebaseBD {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // Handle successful uploads on complete
-                Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                saveUriAndName(downloadUrl, childName);
+
             }
         });
+    }
+
+    private void saveUriAndName(Uri downloadUrl, String childName) {
+
+        ImageUpload imageUpload = new ImageUpload(childName,downloadUrl.toString());
+        childName = childName.substring(0,childName.lastIndexOf("."));
+        DatabaseReference myRef = database.getReference(childName);
+        myRef.setValue(imageUpload);
     }
 
     private String imageName() {

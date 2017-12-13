@@ -78,6 +78,8 @@ public class LoadPictureActivity extends AppCompatActivity {
         firebaseBD = new FirebaseBD();
 
 
+
+
         buttonGalerySelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

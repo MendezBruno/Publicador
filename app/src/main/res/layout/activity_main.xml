@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -22,39 +23,39 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1"
+        android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <ImageView
+            android:id="@+id/imageUser"
             android:layout_width="match_parent"
             android:layout_height="138dp"
-            app:srcCompat="@drawable/userpancho"
-            android:id="@+id/imageUser"
-            android:src="@drawable/userpancho" />
+            android:src="@drawable/userpancho"
+            app:srcCompat="@drawable/userpancho" />
 
         <Button
-            android:text="subir fotos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/loadPicture"
-            android:layout_gravity="center_vertical|center_horizontal" />
-
-        <Button
-            android:text="Hacer una Publicacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:text="subir fotos" />
+
+        <Button
             android:id="@+id/make"
-            android:layout_gravity="bottom|center_horizontal" />
-
-        <Button
-            android:text="Entrar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/buttonLogin" />
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="Hacer una Publicacion" />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrar" />
 
     </LinearLayout>
 

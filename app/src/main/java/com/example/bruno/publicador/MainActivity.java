@@ -1,10 +1,20 @@
 package com.example.bruno.publicador;
 
+import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,11 +22,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
+
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity implements LoginDialog.NoticeDialogListener {
 
@@ -27,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Notic
     FirebaseLogin mFirebaseLogin;
     FirebaseBD mFirebaseBD;
     FirebaseUser fUser;
+    private final int MY_PERMISSIONS = 100;
+    private CoordinatorLayout mRlView;
 
 
 
@@ -37,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Notic
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mRlView = (CoordinatorLayout) findViewById(R.id.cl_view);
 
         mFirebaseLogin = new FirebaseLogin();
         mFirebaseBD = new FirebaseBD();
@@ -61,9 +79,46 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Notic
 
         adminPicture = (ImageView) findViewById(R.id.imageUser);
 
+        if(mayRequestStoragePermission())
+            uploadPicture.setEnabled(true);
+        else
+            uploadPicture.setEnabled(false);
+
+        if (mFirebaseLogin.checkUserStatus()){
+            fUser = mFirebaseLogin.getUser();
+            cargarUserPictureEnView();
+        }
+        else
+            Toast.makeText(MainActivity.this, "Usuario deslogueado", Toast.LENGTH_SHORT).show();
+
+
 
     }
 
+    private boolean mayRequestStoragePermission() {
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return true;
+
+        if((checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) &&
+                (checkSelfPermission(CAMERA) == PackageManager.PERMISSION_GRANTED))
+            return true;
+
+        if((shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) || (shouldShowRequestPermissionRationale(CAMERA))){
+            Snackbar.make(mRlView, "Los permisos son necesarios para poder usar la aplicación",
+                    Snackbar.LENGTH_INDEFINITE).setAction(android.R.string.ok, new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.M)
+                @Override
+                public void onClick(View v) {
+                    requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
+                }
+            });
+        }else{
+            requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, MY_PERMISSIONS);
+        }
+
+        return false;
+    }
 
 
     private void openDialogInputData() {
@@ -109,14 +164,17 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Notic
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String userName, String password) {
         //mFirebaseLogin.connect(MainActivity.this, userName, password);
+       doitBackgroundTask(userName,password);
+    }
+
+    public void doitBackgroundTask(String username, String password){
         BackgroundTask task = null;
         try {
-            task = new BackgroundTask(MainActivity.this, userName, password);
+            task = new BackgroundTask(MainActivity.this, username, password);
             task.execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /*TAREA ASINCRONA DE LOGIN  */
@@ -166,6 +224,45 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Notic
             e.printStackTrace();
 
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == MY_PERMISSIONS){
+            if(grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(MainActivity.this, "Permisos aceptados", Toast.LENGTH_SHORT).show();
+                uploadPicture.setEnabled(true);
+            }
+        }else{
+            showExplanation();
+        }
+    }
+
+    private void showExplanation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Permisos denegados");
+        builder.setMessage("Para usar las funciones de la app necesitas aceptar los permisos");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        builder.show();
     }
 }
 
